@@ -42,6 +42,7 @@ typedef enum
 * @return TexEnv of the given stage.
 */
 C3D_TexEnv* C3D_GetTexEnv(int id);
+
 /*
 * @brief Sets the TexEnv for a given stage.
 * @param[in] id Stage to set.
@@ -52,19 +53,20 @@ void C3D_SetTexEnv(int id, C3D_TexEnv* env);
 /*
 * @brief Marks a TexEnv as needing to be updated.
 * @note One must use this if they are continuing to use a TexEnv pointer they got from GetTexEnv after performing an action that flushes state.
+* @param[in] Pointer to a TexEnv struct.
 */
 void C3D_DirtyTexEnv(C3D_TexEnv* env);
 
 /*
-* @brief Configure the contents of the PICA register that marks which points GPU_PREVIOUS_BUFFER should be updated at.
-* @note See the Citro3D User Manual for more information.
-* @note One may look here https://www.3dbrew.org/wiki/GPU/Internal_Registers#GPUREG_TEXENV_UPDATE_BUFFER to see what they are writing.
+* @brief Configures the stages where the GPU_PREVIOUS_BUFFER source value should be updated with the output of that stage.
+* @note See the citro3D User Manual for more information.
 * @param[in] mode TexEnv update modes (see \ref C3D_TexEnvMode)
-* @param[in] mask Contents to write to the register. Note that only 4 bits are used; the ones used to write the color or alpha values.
+* @param[in] mask Where GPU_PREVIOUS_BUFFER should be updated or not. One may use the GPU_TEV_BUFFER_WRITE_CONFIG macro for this purpose.
 */
 void C3D_TexEnvBufUpdate(int mode, int mask);
+
 /*
-* @brief Configure the initial value of GPU_PREVIOUS_BUFFER. This value will be kept until it is updated; see C3D_TexEnvBufUpdate.
+* @brief Configure the initial value of GPU_PREVIOUS_BUFFER. This value will be kept until it is updated; see \ref C3D_TexEnvBufUpdate.
 * @param[in] RGBA color value to write.
 */
 void C3D_TexEnvBufColor(u32 color);
@@ -134,7 +136,7 @@ C3D_DEPRECATED static inline void C3D_TexEnvOp(C3D_TexEnv* env, C3D_TexEnvMode m
 
 /*
 * @brief Configures the operation to be applied to the input color of a TexEnv before the function is applied.
-* @param[out] env TexEnv to modfy.
+* @param[out] env Pointer to TexEnv struct.
 * @param[in] o1 Operation to perform on the first source.
 * @param[in] o2 Operation to perform on the second source.
 * @param[in] o3 Operation to perform on the third source.
@@ -149,7 +151,7 @@ static inline void C3D_TexEnvOpRgb(C3D_TexEnv* env,
 
 /*
 * @brief Configures the operation to be applied to the input alpha of a TexEnv before the function is applied.
-* @param[out] env TexEnv to modfy.
+* @param[out] env Pointer to TexEnv struct.
 * @param[in] o1 Operation to perform on the first source.
 * @param[in] o2 Operation to perform on the second source.
 * @param[in] o3 Operation to perform on the third source.
