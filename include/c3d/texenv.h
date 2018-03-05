@@ -1,25 +1,31 @@
 /*
 * @file texenv.h
 * @brief Functions to configure the PICA200's "combiner stages", AKA TexEnv.
-* @note See the Citro3D User Manual for more information.
+* @note See the citro3D User Manual for more information.
 */
 
 #pragma once
 #include "types.h"
 
-///Contains entire information about a single TexEnv stage.
-///Usually one shouldn't modify this struct directly- instead the C3D_TexEnv* functions should be used.
+/*
+* @brief Contains entire information about a single TexEnv stage.
+* @note Usually one shouldn't modify this struct directly- instead the C3D_TexEnv* functions should be used.
+*/
 typedef struct
 {
 	u16 srcRgb, srcAlpha; ///<Source values for the color and alpha of this stage.
 	union
 	{
-		u32 opAll; ///Contains information on the operations to perform on this stage.
-		struct { u32 opRgb:12, opAlpha:12; };
+		u32 opAll; ///<Contains information on the operations to perform on this stage.
+		struct 
+		{ 
+			u32 opRgb:12,  ///<Color operations.
+				opAlpha:12;///<Alpha operations.
+		};
 	};
 	u16 funcRgb, funcAlpha; ///<Functions to perform on the sources of this stage.
 	u32 color; ///<Constant value for this stage.
-	u16 scaleRgb, scaleAlpha; ///Scale factor of the color and alpha of this stage.
+	u16 scaleRgb, scaleAlpha; ///<Scale factor of the color and alpha of this stage.
 } C3D_TexEnv;
 
 ///Color, alpha, or both.
@@ -53,13 +59,13 @@ void C3D_DirtyTexEnv(C3D_TexEnv* env);
 * @brief Configure the contents of the PICA register that marks which points GPU_PREVIOUS_BUFFER should be updated at.
 * @note See the Citro3D User Manual for more information.
 * @note One may look here https://www.3dbrew.org/wiki/GPU/Internal_Registers#GPUREG_TEXENV_UPDATE_BUFFER to see what they are writing.
-* @param[in] mode Whether to apply this to the color, alpha, or both.
+* @param[in] mode TexEnv update modes (see \ref C3D_TexEnvMode)
 * @param[in] mask Contents to write to the register. Note that only 4 bits are used; the ones used to write the color or alpha values.
 */
 void C3D_TexEnvBufUpdate(int mode, int mask);
 /*
 * @brief Configure the initial value of GPU_PREVIOUS_BUFFER. This value will be kept until it is updated; see C3D_TexEnvBufUpdate.
-* @param[in] color Value to write.
+* @param[in] RGBA color value to write.
 */
 void C3D_TexEnvBufColor(u32 color);
 
@@ -87,9 +93,9 @@ static inline void C3D_TexEnvInit(C3D_TexEnv* env)
 }
 
 #ifdef __cplusplus
-#define _C3D_DEFAULT(x) = x ///<Default value of this argument.
+#define _C3D_DEFAULT(x) = x
 #else
-#define _C3D_DEFAULT(x) ///<Default value of this argument.
+#define _C3D_DEFAULT(x)
 #endif
 
 C3D_DEPRECATED static inline void TexEnv_Init(C3D_TexEnv* env)
@@ -98,9 +104,9 @@ C3D_DEPRECATED static inline void TexEnv_Init(C3D_TexEnv* env)
 }
 
 /*
-@brief Function to set the source value for a TexEnv.
-@param[out] env TexEnv to modify.
-@param[in] mode Whether to apply this to the color, alpha, or both.
+@brief Sets the input source of a TexEnv.
+@param[out] env Pointer to TexEnv struct.
+@param[in] mode TexEnv update modes (see \ref C3D_TexEnvMode)
 @param[in] s1 First source.
 @param[in] s2 Second source.
 @param[in] s3 Third source.
@@ -127,7 +133,7 @@ C3D_DEPRECATED static inline void C3D_TexEnvOp(C3D_TexEnv* env, C3D_TexEnvMode m
 }
 
 /*
-* @brief Sets the operation to perform on the color in a TexEnv before performing the function.
+* @brief Configures the operation to be applied to the input color of a TexEnv before the function is applied.
 * @param[out] env TexEnv to modfy.
 * @param[in] o1 Operation to perform on the first source.
 * @param[in] o2 Operation to perform on the second source.
@@ -142,7 +148,7 @@ static inline void C3D_TexEnvOpRgb(C3D_TexEnv* env,
 }
 
 /*
-* @brief Sets the operation to perform on the alpha in a TexEnv before performing the function.
+* @brief Configures the operation to be applied to the input alpha of a TexEnv before the function is applied.
 * @param[out] env TexEnv to modfy.
 * @param[in] o1 Operation to perform on the first source.
 * @param[in] o2 Operation to perform on the second source.
@@ -158,8 +164,8 @@ static inline void C3D_TexEnvOpAlpha(C3D_TexEnv* env,
 
 /*
 * @brief Sets the combiner function to perform in this TexEnv.
-* @param[out] env TexEnv to modify.
-* @param[in] mode Whether to apply this to the color, alpha, or both.
+* @param[out] env Pointer to TexEnv struct.
+* @param[in] mode TexEnv update modes (see \ref C3D_TexEnvMode)
 * @param[in] param Function to use.
 */
 static inline void C3D_TexEnvFunc(C3D_TexEnv* env, C3D_TexEnvMode mode, GPU_COMBINEFUNC param)
@@ -171,9 +177,9 @@ static inline void C3D_TexEnvFunc(C3D_TexEnv* env, C3D_TexEnvMode mode, GPU_COMB
 }
 
 /*
-* @brief Sets the constant for a TexEnv.
-* @param[out] env TexEnv to modify.
-* @param[in] color Constant to apply.
+* @brief Sets the value of the GPU_CONSTANT source for a TexEnv stage.
+* @param[out] env Pointer to TexEnv struct.
+* @param[in] color RGBA color value to apply.
 */
 static inline void C3D_TexEnvColor(C3D_TexEnv* env, u32 color)
 {
@@ -181,9 +187,9 @@ static inline void C3D_TexEnvColor(C3D_TexEnv* env, u32 color)
 }
 
 /*
-* @brief Applies a scale factor for a TexEnv. result *= scale
-* @param[out] env TexEnv to modify.
-* @param[in] mode Whether to apply this to the color, alpha, or both.
+* @brief Configures the scaling to be applied to the output of a TexEnv.
+* @param[out] env Pointer to TexEnv struct.
+* @param[in] mode TexEnv update modes (see \ref C3D_TexEnvMode)
 * @param[in] param Scale factor to apply.
 */
 static inline void C3D_TexEnvScale(C3D_TexEnv* env, int mode, GPU_TEVSCALE param)
