@@ -53,7 +53,7 @@ void C3D_SetTexEnv(int id, C3D_TexEnv* env);
 /*
 * @brief Marks a TexEnv as needing to be updated.
 * @note One must use this if they are continuing to use a TexEnv pointer they got from GetTexEnv after performing an action that flushes state.
-* @param[in] Pointer to a TexEnv struct.
+* @param[in] env Pointer to a TexEnv struct.
 */
 void C3D_DirtyTexEnv(C3D_TexEnv* env);
 
@@ -61,7 +61,7 @@ void C3D_DirtyTexEnv(C3D_TexEnv* env);
 * @brief Configures the stages where the GPU_PREVIOUS_BUFFER source value should be updated with the output of that stage.
 * @note See the citro3D User Manual for more information.
 * @param[in] mode TexEnv update modes (see \ref C3D_TexEnvMode)
-* @param[in] mask Where GPU_PREVIOUS_BUFFER should be updated or not. One may use the GPU_TEV_BUFFER_WRITE_CONFIG macro for this purpose.
+* @param[in] mask Bitmask containing which stages update GPU_PREVIOUS_BUFFER (can be built using GPU_TEV_BUFFER_WRITE_CONFIG)
 */
 void C3D_TexEnvBufUpdate(int mode, int mask);
 
