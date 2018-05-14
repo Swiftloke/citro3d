@@ -30,10 +30,11 @@ void BufInfo_Init(C3D_BufInfo* info);
 * @param[in] data Pointer to buffer.
 * @param[in] stride Distance in bytes between vertex entries in the buffer (usually set to the size of the vertex structure).
 * @param[in] attribCount Number of attributes to load from this buffer.
-* @param[in] permutation Determines the order of attributes in the buffer. 
-* @remarkUsing this, one can rearrange the positions of attributes in the struct by marking the attribute positions in reverse order (LSB to MSB).\
+* @param[in] permutation Specifies the order of attributes in the buffer. Each attribute index is a nibble (4 bits), and they are ordered from least significant to most significant.\
+* Padding can be specified with 0xC, 0xD, 0xE and 0xF. (See https://3dbrew.org/wiki/GPU/Internal_Registers#GPUREG_ATTRIBBUFFERi_CONFIG1 for more info)
+* @remark Using this, one can rearrange the positions of attributes in the struct.\
 * For example, with three attributes in this buffer, setting this to 0x210 would configure the permutation to be the first attribute,\
-* then the second, then the third. 0x120 would configure it for the second attribute first, then the third, then the first.
+* then the second, then the third. 0x120 would set for the second attribute first, then the third, then the first.
 */
 int  BufInfo_Add(C3D_BufInfo* info, const void* data, ptrdiff_t stride, int attribCount, u64 permutation);
 
