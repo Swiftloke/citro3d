@@ -40,12 +40,12 @@ int  BufInfo_Add(C3D_BufInfo* info, const void* data, ptrdiff_t stride, int attr
 
 /*
 * @brief Returns a pointer to the \ref C3D_BufInfo citro3d is currently using.
-* @return Pointer to the BufInfo struct in use.
+* @return Pointer to BufInfo struct.
 */
 C3D_BufInfo* C3D_GetBufInfo(void);
 
 /*
 * @brief Sets the \ref C3D_BufInfo in use.
-* @param[in] info Pointer to the BufInfo struct to use.
+* @param[in] info Pointer to BufInfo struct.
 */
 void C3D_SetBufInfo(C3D_BufInfo* info);

@@ -76,8 +76,8 @@ void C3D_TexEnvBufColor(u32 color);
 * @param[out] env TexEnv to initialize.
 * This is the same as performing the following:
 * @code C3D_TexEnvSrc(env, C3D_Both, GPU_PREVIOUS, 0, 0);
-* C3D_TexEnvOpRgb(env, GPU_TEVOP_RGB_SRC_COLOR, 0, 0);
-* C3D_TexEnvOpA(env, GPU_TEVOP_A_SRC_ALPHA, 0, 0);
+* C3D_TexEnvOpRgb(env, GPU_TEVOP_RGB_SRC_COLOR, GPU_TEVOP_RGB_SRC_COLOR, GPU_TEVOP_RGB_SRC_COLOR);
+* C3D_TexEnvOpA(env, GPU_TEVOP_A_SRC_ALPHA, GPU_TEVOP_A_SRC_ALPHA, GPU_TEVOP_A_SRC_ALPHA;
 * C3D_TexEnvFunc(env, C3D_Both, GPU_REPLACE);
 * C3D_TexEnvColor(env, 0xFFFFFFFF);
 * C3D_TexEnvScale(env, C3D_Both, GPU_TEVSCALE_1);@endcode
